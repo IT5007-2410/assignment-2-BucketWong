@@ -10,6 +10,7 @@ const initialTravellers = [
   },
 ];
 
+const maxSeats = 10;
 
 function TravellerRow({traveller}) {
   {/*Q3. Placeholder to initialize local variable based on traveller prop.*/ }
@@ -87,7 +88,6 @@ class Delete extends React.Component {
     e.preventDefault();
     /*Q5. Fetch the passenger details from the deletion form and call deleteTraveller()*/
     const form = document.forms.deleteTraveller;
-    console.log("class Delete: ", form.travellername.value);
     this.props.deletefunction(form.travellername.value);
   }
 
@@ -103,26 +103,36 @@ class Delete extends React.Component {
 }
 
 class Homepage extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = { travellers: props.travellers };
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.travellers !== this.props.travellers) {
+      this.setState({ travellers: this.props.travellers });
+    }
+  }
+  
   render() {
     return (
-      <div>
+      <h2>
         {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
-      </div>);
+        Free Seats: {maxSeats - this.state.travellers.length}
+      </h2>);
   }
 }
 class TicketToRide extends React.Component {
   constructor() {
     super();
-    this.state = { travellers: [], selector: 1 };
+    this.state = { travellers: [], selector: "Homepage" };
     this.bookTraveller = this.bookTraveller.bind(this);
     this.deleteTraveller = this.deleteTraveller.bind(this);
   }
 
   setSelector(value) {
     /*Q2. Function to set the value of component selector variable based on user's button click.*/
+    this.setState({ selector: value });
   }
   componentDidMount() {
     this.loadData();
@@ -154,22 +164,32 @@ class TicketToRide extends React.Component {
     this.setState({travellers: newlist});
   }
   render() {
+    var displayedComponent;
+    if (this.state.selector === 'Homepage') {
+      {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
+      displayedComponent = <Homepage travellers={this.state.travellers}/>;
+    } else if (this.state.selector === 'Display') {
+      {/*Q3. Code to call component that Displays Travellers.*/}
+      displayedComponent = <Display travellers={this.state.travellers} />;
+    } else if (this.state.selector === 'Add') {
+      {/*Q4. Code to call the component that adds a traveller.*/}
+      displayedComponent = <Add addfunction={this.bookTraveller}/>;
+    } else if (this.state.selector === 'Delete') {
+      {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
+      displayedComponent = <Delete deletefunction={this.deleteTraveller}/>;
+    }
     return (
       <div>
         <h1>Ticket To Ride</h1>
         <div>
           {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
+          <button onClick={() => this.setSelector('Homepage')}>Homepage</button>
+          <button onClick={() => this.setSelector('Display')}>Display</button>
+          <button onClick={() => this.setSelector('Add')}>Add</button>
+          <button onClick={() => this.setSelector('Delete')}>Delete</button>
         </div>
         <div>
-          {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
-          {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-          {/*Q3. Code to call component that Displays Travellers.*/}
-          <Display travellers={this.state.travellers}/>
-          {/*Q4. Code to call the component that adds a traveller.*/}
-          <Add addfunction={this.bookTraveller}/>
-          {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
-          <Delete deletefunction={this.deleteTraveller}/>
-
+          {displayedComponent}
         </div>
       </div>
     );
