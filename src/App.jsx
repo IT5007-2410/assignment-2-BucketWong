@@ -27,10 +27,8 @@ function TravellerRow({traveller}) {
 }
 
 function Display({travellers}) {
-
-  console.log("Display: ", travellers);
+  // console.log("Display: ", travellers);
   /*Q3. Write code to render rows of table, reach corresponding to one traveller. Make use of the TravellerRow function that draws one row.*/
-
   return (
     <table className="bordered-table">
       <thead>
@@ -62,6 +60,8 @@ class Add extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
+    const form = document.forms.addTraveller;
+    this.props.addfunction(form.travellername.value, form.travellerphone.value, form.travellerseat.value);
   }
 
   render() {
@@ -69,6 +69,8 @@ class Add extends React.Component {
       <form name="addTraveller" onSubmit={this.handleSubmit}>
         {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
         <input type="text" name="travellername" placeholder="Name" />
+        <input type="text" name="travellerphone" placeholder="Phone" />
+        <input type="text" name="travellerseat" placeholder="Seat" />
         <button>Add</button>
       </form>
     );
@@ -85,7 +87,7 @@ class Delete extends React.Component {
     e.preventDefault();
     /*Q5. Fetch the passenger details from the deletion form and call deleteTraveller()*/
     const form = document.forms.deleteTraveller;
-    // console.log("class Delete: ", form.travellername.value);
+    console.log("class Delete: ", form.travellername.value);
     this.props.deletefunction(form.travellername.value);
   }
 
@@ -132,13 +134,17 @@ class TicketToRide extends React.Component {
     }, 500);
   }
 
-  bookTraveller(passenger) {
+  bookTraveller(name, phone, seat) {
     /*Q4. Write code to add a passenger to the traveller state variable.*/
+    var newList = this.state.travellers;
+    var newid = newList[newList.length - 1].id + 1;
+    const newPassenger = {id: newid, name: name, phone: phone, seat: seat, bookingTime: new Date()};
+    newList = newList.concat(newPassenger);
+    this.setState({travellers: newList})
   }
 
   deleteTraveller(passenger) {
     /*Q5. Write code to delete a passenger from the traveller state variable.*/
-    // console.log("deleteTraveller: ", passenger);
     var newlist = [];
     this.state.travellers.forEach(element => {
       if (element.name != passenger){
@@ -160,6 +166,7 @@ class TicketToRide extends React.Component {
           {/*Q3. Code to call component that Displays Travellers.*/}
           <Display travellers={this.state.travellers}/>
           {/*Q4. Code to call the component that adds a traveller.*/}
+          <Add addfunction={this.bookTraveller}/>
           {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
           <Delete deletefunction={this.deleteTraveller}/>
 
