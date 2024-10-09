@@ -12,9 +12,9 @@ const initialTravellers = [
 
 const maxSeats = 10;
 
-function TravellerRow({traveller}) {
+function TravellerRow({ traveller }) {
   {/*Q3. Placeholder to initialize local variable based on traveller prop.*/ }
-  const {id, name, phone, seat, bookingTime} = traveller;
+  const { id, name, phone, seat, bookingTime } = traveller;
   return (
     <tr>
       {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
@@ -27,7 +27,7 @@ function TravellerRow({traveller}) {
   );
 }
 
-function Display({travellers}) {
+function Display({ travellers }) {
   // console.log("Display: ", travellers);
   /*Q3. Write code to render rows of table, reach corresponding to one traveller. Make use of the TravellerRow function that draws one row.*/
   return (
@@ -57,12 +57,16 @@ class Add extends React.Component {
     super();
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
   handleSubmit(e) {
     e.preventDefault();
-    /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
-    const form = document.forms.addTraveller;
-    this.props.addfunction(form.travellername.value, form.travellerphone.value, form.travellerseat.value);
+    console.log(this.props.travellers.length)
+    if (this.props.travellers.length == maxSeats) {
+      this.props.setfullfunction();
+    } else {
+      /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
+      const form = document.forms.addTraveller;
+      this.props.addfunction(form.travellername.value, form.travellerphone.value, form.travellerseat.value);
+    }
   }
 
   render() {
@@ -113,7 +117,7 @@ class Homepage extends React.Component {
       this.setState({ travellers: this.props.travellers });
     }
   }
-  
+
   render() {
     return (
       <h2>
@@ -125,9 +129,10 @@ class Homepage extends React.Component {
 class TicketToRide extends React.Component {
   constructor() {
     super();
-    this.state = { travellers: [], selector: "Homepage" };
+    this.state = { travellers: [], selector: "Homepage", isMax: false };
     this.bookTraveller = this.bookTraveller.bind(this);
     this.deleteTraveller = this.deleteTraveller.bind(this);
+    this.setFull = this.setFull.bind(this);
   }
 
   setSelector(value) {
@@ -147,36 +152,44 @@ class TicketToRide extends React.Component {
   bookTraveller(name, phone, seat) {
     /*Q4. Write code to add a passenger to the traveller state variable.*/
     var newList = this.state.travellers;
+    console.log(this.state.isMax);
     var newid = newList[newList.length - 1].id + 1;
-    const newPassenger = {id: newid, name: name, phone: phone, seat: seat, bookingTime: new Date()};
+    const newPassenger = { id: newid, name: name, phone: phone, seat: seat, bookingTime: new Date() };
     newList = newList.concat(newPassenger);
-    this.setState({travellers: newList})
+    this.setState({ travellers: newList });
+  }
+
+  setFull() {
+    this.setState({ isMax: true });
   }
 
   deleteTraveller(passenger) {
     /*Q5. Write code to delete a passenger from the traveller state variable.*/
     var newlist = [];
     this.state.travellers.forEach(element => {
-      if (element.name != passenger){
+      if (element.name != passenger) {
         newlist.push(element);
       }
     });
-    this.setState({travellers: newlist});
+    this.setState({ travellers: newlist, isMax: false });
   }
   render() {
-    var displayedComponent;
+    var displayedComponent, warningMessage;
     if (this.state.selector === 'Homepage') {
-      {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-      displayedComponent = <Homepage travellers={this.state.travellers}/>;
+      {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/ }
+      displayedComponent = <Homepage travellers={this.state.travellers} />;
     } else if (this.state.selector === 'Display') {
-      {/*Q3. Code to call component that Displays Travellers.*/}
+      {/*Q3. Code to call component that Displays Travellers.*/ }
       displayedComponent = <Display travellers={this.state.travellers} />;
     } else if (this.state.selector === 'Add') {
-      {/*Q4. Code to call the component that adds a traveller.*/}
-      displayedComponent = <Add addfunction={this.bookTraveller}/>;
+      {/*Q4. Code to call the component that adds a traveller.*/ }
+      displayedComponent = <Add addfunction={this.bookTraveller} setfullfunction={this.setFull} travellers={this.state.travellers}/>;
+      if (this.state.isMax) {
+        warningMessage = <div>No more seats!</div>
+      }
     } else if (this.state.selector === 'Delete') {
-      {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
-      displayedComponent = <Delete deletefunction={this.deleteTraveller}/>;
+      {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/ }
+      displayedComponent = <Delete deletefunction={this.deleteTraveller} />;
     }
     return (
       <div>
@@ -190,6 +203,7 @@ class TicketToRide extends React.Component {
         </div>
         <div>
           {displayedComponent}
+          {warningMessage}
         </div>
       </div>
     );
