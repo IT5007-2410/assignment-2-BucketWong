@@ -11,17 +11,24 @@ const initialTravellers = [
 ];
 
 
-function TravellerRow(props) {
+function TravellerRow({traveller}) {
   {/*Q3. Placeholder to initialize local variable based on traveller prop.*/ }
+  const {id, name, phone, seat, bookingTime} = traveller;
   return (
     <tr>
       {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
+      <td>{id}</td>
+      <td>{name}</td>
+      <td>{phone}</td>
+      <td>{seat}</td>
+      <td>{bookingTime ? bookingTime.toLocaleString() : 'N/A'}</td>
     </tr>
   );
 }
 
-function Display(props) {
+function Display({travellers}) {
 
+  console.log("Display: ", travellers);
   /*Q3. Write code to render rows of table, reach corresponding to one traveller. Make use of the TravellerRow function that draws one row.*/
 
   return (
@@ -32,11 +39,15 @@ function Display(props) {
           <th>ID</th>
           <th>Name</th>
           <th>Phone</th>
+          <th>Seat</th>
           <th>Booking Time</th>
         </tr>
       </thead>
       <tbody>
         {/*Q3. write code to call the JS variable defined at the top of this function to render table rows.*/}
+        {travellers.map((traveller) => (
+          <TravellerRow key={traveller.id} traveller={traveller} />
+        ))}
       </tbody>
     </table>
   );
@@ -147,7 +158,7 @@ class TicketToRide extends React.Component {
           {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
           {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
           {/*Q3. Code to call component that Displays Travellers.*/}
-
+          <Display travellers={this.state.travellers}/>
           {/*Q4. Code to call the component that adds a traveller.*/}
           {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
           <Delete deletefunction={this.deleteTraveller}/>
