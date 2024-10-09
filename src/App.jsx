@@ -1,11 +1,11 @@
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
-const initialTravellers = [
+const travellers = [
   {
-    id: 1, name: 'Jack', phone: 88885555,
+    id: 1, name: 'Jack', phone: 88885555, seat: 'A1', 
     bookingTime: new Date(),
   },
   {
-    id: 2, name: 'Rose', phone: 88884444,
+    id: 2, name: 'Rose', phone: 88884444, seat: 'B1',
     bookingTime: new Date(),
   },
 ];
@@ -133,7 +133,7 @@ class TicketToRide extends React.Component {
   render() {
     return (
       <div>
-        <h1>Ticket To Ride</h1>
+        <h1>Ticket To Ride!!!</h1>
 	<div>
 	    {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
 	</div>
@@ -144,7 +144,7 @@ class TicketToRide extends React.Component {
 		
 		{/*Q4. Code to call the component that adds a traveller.*/}
 		{/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
-    <Delete/>
+    <Delete />
     
 	</div>
       </div>
