@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -w server server/server.js",
-    "compile": "babel src --out-dir public",
+    "compile": "nodemon -w src -e jsx --exec babel src --out-dir public",
     "watch": "babel src --out-dir public --watch --verbose",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,13 +17,13 @@
   "license": "ISC",
   "homepage": "https://github.com/vasansr/pro-mern-stack-2",
   "dependencies": {
-    "express": "^4.16.4",
-    "nodemon": "^1.18.9"
+    "express": "^4.16.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
+    "@babel/cli": "^7.25.7",
+    "@babel/core": "^7.25.7",
     "@babel/preset-env": "^7.2.3",
-    "@babel/preset-react": "^7.0.0"
+    "@babel/preset-react": "^7.25.7",
+    "nodemon": "^3.1.7"
   }
 }
