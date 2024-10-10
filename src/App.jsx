@@ -59,7 +59,6 @@ class Add extends React.Component {
   }
   handleSubmit(e) {
     e.preventDefault();
-    console.log(this.props.travellers.length)
     if (this.props.travellers.length == maxSeats) {
       this.props.setfullfunction();
     } else {
@@ -122,10 +121,37 @@ class Homepage extends React.Component {
     return (
       <h2>
         {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
-        Free Seats: {maxSeats - this.state.travellers.length}
+        Free Seats: {maxSeats - this.state.travellers.length}/{maxSeats}
       </h2>);
   }
 }
+
+function SeatsRepre({ travellers }) {
+  const seats = [];
+
+  for (var i = 0; i < maxSeats - travellers.length; i++)
+    seats.push('green');
+
+  for (var i = 0; i < travellers.length; i++)
+    seats.push('grey');
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 20px)', gap: '5px' }}>
+      {seats.map((color, index) => (
+        <div
+          key={index}
+          style={{
+            width: '20px',
+            height: '20px',
+            backgroundColor: color,
+            border: '1px solid black',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 class TicketToRide extends React.Component {
   constructor() {
     super();
@@ -152,7 +178,6 @@ class TicketToRide extends React.Component {
   bookTraveller(name, phone, seat) {
     /*Q4. Write code to add a passenger to the traveller state variable.*/
     var newList = this.state.travellers;
-    console.log(this.state.isMax);
     var newid = newList[newList.length - 1].id + 1;
     const newPassenger = { id: newid, name: name, phone: phone, seat: seat, bookingTime: new Date() };
     newList = newList.concat(newPassenger);
@@ -177,13 +202,18 @@ class TicketToRide extends React.Component {
     var displayedComponent, warningMessage;
     if (this.state.selector === 'Homepage') {
       {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/ }
-      displayedComponent = <Homepage travellers={this.state.travellers} />;
+      displayedComponent = (
+        <div>
+          <Homepage travellers={this.state.travellers} />
+          <SeatsRepre travellers={this.state.travellers} />
+        </div>
+      );
     } else if (this.state.selector === 'Display') {
       {/*Q3. Code to call component that Displays Travellers.*/ }
       displayedComponent = <Display travellers={this.state.travellers} />;
     } else if (this.state.selector === 'Add') {
       {/*Q4. Code to call the component that adds a traveller.*/ }
-      displayedComponent = <Add addfunction={this.bookTraveller} setfullfunction={this.setFull} travellers={this.state.travellers}/>;
+      displayedComponent = <Add addfunction={this.bookTraveller} setfullfunction={this.setFull} travellers={this.state.travellers} />;
       if (this.state.isMax) {
         warningMessage = <div>No more seats!</div>
       }
